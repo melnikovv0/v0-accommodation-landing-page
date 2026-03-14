@@ -60,12 +60,14 @@ export function Header() {
               <Globe className="h-5 w-5" />
               <span className="sr-only">Change language</span>
             </Button>
-            <Button
-              variant="ghost"
-              className="text-primary-foreground hover:bg-primary-foreground/10"
-            >
-              List your property
-            </Button>
+            <Link href="/uis">
+              <Button
+                variant="ghost"
+                className="text-primary-foreground hover:bg-primary-foreground/10"
+              >
+                Property Management
+              </Button>
+            </Link>
             <Button
               variant="outline"
               className="border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10"
