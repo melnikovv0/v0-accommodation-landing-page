@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -25,6 +25,11 @@ export function HeroSection() {
   const [checkOut, setCheckOut] = useState<Date>();
   const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
   const [guestsOpen, setGuestsOpen] = useState(false);
+  const [today, setToday] = useState<Date | undefined>(undefined);
+
+  useEffect(() => {
+    setToday(new Date());
+  }, []);
 
   const updateGuests = (
     type: "adults" | "children" | "rooms",
@@ -92,7 +97,7 @@ export function HeroSection() {
                     mode="single"
                     selected={checkIn}
                     onSelect={setCheckIn}
-                    disabled={(date) => date < new Date()}
+                    disabled={(date) => today ? date < today : false}
                     initialFocus
                   />
                 </PopoverContent>
@@ -121,7 +126,7 @@ export function HeroSection() {
                     selected={checkOut}
                     onSelect={setCheckOut}
                     disabled={(date) =>
-                      date < new Date() || (checkIn ? date <= checkIn : false)
+                      (today ? date < today : false) || (checkIn ? date <= checkIn : false)
                     }
                     initialFocus
                   />
