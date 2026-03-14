@@ -1,16 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AvailabilityCalendar } from "@/components/uis/availability-calendar";
 import { BookingForm } from "@/components/uis/booking-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { reservations, properties } from "@/lib/mock-data";
+import { format } from "date-fns";
 import { Calendar, Plus, List } from "lucide-react";
 
 export default function ReservationsPage() {
+  const [mounted, setMounted] = useState(false);
   const [activeTab, setActiveTab] = useState("calendar");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const getPropertyName = (propertyId: string) => {
     return properties.find((p) => p.id === propertyId)?.name || "Unknown";
@@ -28,6 +34,14 @@ export default function ReservationsPage() {
         return "bg-muted text-muted-foreground";
     }
   };
+
+  if (!mounted) {
+    return (
+      <div className="p-6 lg:p-8">
+        <div className="h-96 animate-pulse rounded-lg bg-muted" />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 lg:p-8">
@@ -90,8 +104,8 @@ export default function ReservationsPage() {
                         {getPropertyName(reservation.propertyId)}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        {reservation.checkIn.toLocaleDateString()} -{" "}
-                        {reservation.checkOut.toLocaleDateString()}
+                        {format(reservation.checkIn, "MMM d, yyyy")} -{" "}
+                        {format(reservation.checkOut, "MMM d, yyyy")}
                       </p>
                     </div>
                     <div className="text-right">
