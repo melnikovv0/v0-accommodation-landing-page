@@ -98,20 +98,8 @@ export function UisSidebar({ collapsed = false, onToggle }: SidebarProps) {
           const isActive = pathname === module.route;
           const isDisabled = !module.enabled;
 
-          return (
-            <Link
-              key={module.id}
-              href={isDisabled ? "#" : module.route}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
-                isActive
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                  : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-                isDisabled && "cursor-not-allowed opacity-50",
-                collapsed && "justify-center px-2"
-              )}
-              onClick={(e) => isDisabled && e.preventDefault()}
-            >
+          const content = (
+            <>
               <Icon className="h-5 w-5 shrink-0" />
               {!collapsed && (
                 <>
@@ -123,6 +111,29 @@ export function UisSidebar({ collapsed = false, onToggle }: SidebarProps) {
                   )}
                 </>
               )}
+            </>
+          );
+
+          const baseClassName = cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
+            isActive
+              ? "bg-sidebar-primary text-sidebar-primary-foreground"
+              : "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+            isDisabled && "cursor-not-allowed opacity-50",
+            collapsed && "justify-center px-2"
+          );
+
+          if (isDisabled) {
+            return (
+              <span key={module.id} className={baseClassName}>
+                {content}
+              </span>
+            );
+          }
+
+          return (
+            <Link key={module.id} href={module.route} className={baseClassName}>
+              {content}
             </Link>
           );
         })}
