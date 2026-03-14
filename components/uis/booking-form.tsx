@@ -61,6 +61,7 @@ export function BookingForm({
 }: BookingFormProps) {
   const [mounted, setMounted] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [confirmationNumber, setConfirmationNumber] = useState("");
   const [formData, setFormData] = useState<BookingData>({
     propertyId: preselectedProperty || "",
     checkIn: preselectedDates?.start.toISOString().split("T")[0] || "",
@@ -134,6 +135,7 @@ export function BookingForm({
       setCurrentStep(currentStep + 1);
     }
     if (currentStep === 3) {
+      setConfirmationNumber(`SH-${Date.now().toString(36).toUpperCase()}`);
       onComplete?.(formData);
     }
   };
@@ -458,7 +460,7 @@ export function BookingForm({
             <div className="rounded-lg bg-muted/50 p-4">
               <p className="text-sm text-muted-foreground">Confirmation Number</p>
               <p className="text-2xl font-bold tracking-wider">
-                SH-{Date.now().toString(36).toUpperCase()}
+                {confirmationNumber}
               </p>
             </div>
           </div>

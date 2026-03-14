@@ -208,8 +208,9 @@ export function AvailabilityCalendar({
           {/* Calendar Days */}
           {calendarData.map((day, index) => {
             const isSelected = isInSelectedRange(day.date);
-            const isToday =
-              day.date.toDateString() === new Date().toDateString();
+            const isToday = currentDate
+              ? day.date.toDateString() === currentDate.toDateString()
+              : false;
 
             return (
               <div
