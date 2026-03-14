@@ -72,45 +72,52 @@ export default function UisHomePage() {
           const Icon = iconMap[module.icon] || Calendar;
           const isEnabled = module.enabled;
 
-          return (
-            <Link
-              key={module.id}
-              href={isEnabled ? module.route : "#"}
-              className={!isEnabled ? "cursor-not-allowed" : ""}
-              onClick={(e) => !isEnabled && e.preventDefault()}
+          const cardContent = (
+            <Card
+              className={`transition-all hover:shadow-md ${
+                isEnabled
+                  ? "hover:border-primary/50"
+                  : "opacity-60"
+              }`}
             >
-              <Card
-                className={`transition-all hover:shadow-md ${
-                  isEnabled
-                    ? "hover:border-primary/50"
-                    : "opacity-60"
-                }`}
-              >
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
-                      <Icon className="h-6 w-6 text-primary" />
-                    </div>
-                    {!isEnabled && (
-                      <Badge variant="secondary">Coming Soon</Badge>
-                    )}
-                    {isEnabled && (
-                      <ArrowRight className="h-5 w-5 text-muted-foreground" />
-                    )}
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                    <Icon className="h-6 w-6 text-primary" />
                   </div>
-                  <CardTitle className="mt-4">{module.name}</CardTitle>
-                  <CardDescription>{module.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {isEnabled ? (
-                    <span className="text-sm text-primary">Access module</span>
-                  ) : (
-                    <span className="text-sm text-muted-foreground">
-                      This module will be available soon
-                    </span>
+                  {!isEnabled && (
+                    <Badge variant="secondary">Coming Soon</Badge>
                   )}
-                </CardContent>
-              </Card>
+                  {isEnabled && (
+                    <ArrowRight className="h-5 w-5 text-muted-foreground" />
+                  )}
+                </div>
+                <CardTitle className="mt-4">{module.name}</CardTitle>
+                <CardDescription>{module.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {isEnabled ? (
+                  <span className="text-sm text-primary">Access module</span>
+                ) : (
+                  <span className="text-sm text-muted-foreground">
+                    This module will be available soon
+                  </span>
+                )}
+              </CardContent>
+            </Card>
+          );
+
+          if (!isEnabled) {
+            return (
+              <div key={module.id} className="cursor-not-allowed">
+                {cardContent}
+              </div>
+            );
+          }
+
+          return (
+            <Link key={module.id} href={module.route}>
+              {cardContent}
             </Link>
           );
         })}
