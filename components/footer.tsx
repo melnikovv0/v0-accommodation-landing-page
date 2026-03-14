@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 
@@ -36,6 +39,12 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const [year, setYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setYear(new Date().getFullYear());
+  }, []);
+
   return (
     <footer className="bg-primary">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -146,7 +155,7 @@ export function Footer() {
 
         <div className="mt-12 border-t border-primary-foreground/10 pt-8">
           <p className="text-center text-sm text-primary-foreground/60">
-            &copy; {new Date().getFullYear()} StayHub. All rights reserved.
+            &copy; {year ?? ""} StayHub. All rights reserved.
           </p>
         </div>
       </div>
