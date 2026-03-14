@@ -9,6 +9,7 @@ import {
   Users,
   Wrench,
   ArrowRight,
+  Building2,
 } from "lucide-react";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -17,17 +18,18 @@ const iconMap: Record<string, React.ElementType> = {
   TrendingUp,
   Users,
   Wrench,
+  Building2,
 };
 
-export default function UisHomePage() {
+export default function AdminHomePage() {
   return (
     <div className="p-6 lg:p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight text-foreground">
-          Unified Information System
+          Owner Dashboard
         </h1>
         <p className="mt-2 text-muted-foreground">
-          Manage your accommodation business with our modular platform
+          Manage your properties, bookings, and business operations
         </p>
       </div>
 

@@ -13,7 +13,7 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/explore" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
               <span className="text-lg font-bold text-accent-foreground">S</span>
             </div>
@@ -60,12 +60,12 @@ export function Header() {
               <Globe className="h-5 w-5" />
               <span className="sr-only">Change language</span>
             </Button>
-            <Link href="/uis">
+            <Link href="/admin">
               <Button
                 variant="ghost"
                 className="text-primary-foreground hover:bg-primary-foreground/10"
               >
-                Property Management
+                Owner Dashboard
               </Button>
             </Link>
             <Button

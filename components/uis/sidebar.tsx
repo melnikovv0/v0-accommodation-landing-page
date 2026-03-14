@@ -24,6 +24,7 @@ const iconMap: Record<string, React.ElementType> = {
   TrendingUp,
   Users,
   Wrench,
+  Building2,
 };
 
 interface SidebarProps {
@@ -44,9 +45,9 @@ export function UisSidebar({ collapsed = false, onToggle }: SidebarProps) {
       {/* Header */}
       <div className="flex h-16 items-center justify-between border-b border-sidebar-border px-4">
         {!collapsed && (
-          <Link href="/uis" className="flex items-center gap-2">
+          <Link href="/admin" className="flex items-center gap-2">
             <Building2 className="h-6 w-6 text-sidebar-primary" />
-            <span className="text-lg font-semibold">StayHub UIS</span>
+            <span className="text-lg font-semibold">StayHub Admin</span>
           </Link>
         )}
         {collapsed && (
@@ -74,7 +75,7 @@ export function UisSidebar({ collapsed = false, onToggle }: SidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-2">
         <Link
-          href="/"
+          href="/explore"
           className={cn(
             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
             "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
@@ -82,7 +83,7 @@ export function UisSidebar({ collapsed = false, onToggle }: SidebarProps) {
           )}
         >
           <Home className="h-5 w-5 shrink-0" />
-          {!collapsed && <span>Back to Website</span>}
+          {!collapsed && <span>View Guest Site</span>}
         </Link>
 
         <div className={cn("my-4 border-t border-sidebar-border", collapsed && "mx-2")} />
@@ -142,7 +143,7 @@ export function UisSidebar({ collapsed = false, onToggle }: SidebarProps) {
       {/* Footer */}
       <div className="border-t border-sidebar-border p-2">
         <Link
-          href="/uis/settings"
+          href="/admin/settings"
           className={cn(
             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
             "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
