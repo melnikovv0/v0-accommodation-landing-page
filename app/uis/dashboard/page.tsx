@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { OccupancyOverview } from "@/components/uis/occupancy-overview";
 import { properties, reservations } from "@/lib/mock-data";
+import { format } from "date-fns";
 import {
   Building2,
   Calendar,
@@ -24,7 +25,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true);
-    setTodayStr(new Date().toLocaleDateString());
+    setTodayStr(format(new Date(), "MMM d, yyyy"));
   }, []);
 
   const confirmedReservations = reservations.filter(
@@ -293,10 +294,10 @@ export default function DashboardPage() {
                       </td>
                       <td className="py-3">{property?.name || "Unknown"}</td>
                       <td className="py-3">
-                        {reservation.checkIn.toLocaleDateString()}
+                        {format(reservation.checkIn, "MMM d, yyyy")}
                       </td>
                       <td className="py-3">
-                        {reservation.checkOut.toLocaleDateString()}
+                        {format(reservation.checkOut, "MMM d, yyyy")}
                       </td>
                       <td className="py-3">{reservation.guests}</td>
                       <td className="py-3 text-right font-bold">
