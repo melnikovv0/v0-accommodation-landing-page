@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -19,6 +19,31 @@ import {
   Plus,
 } from "lucide-react";
 
+const cities = [
+  { name: "Paris", country: "France", popular: true },
+  { name: "London", country: "United Kingdom", popular: true },
+  { name: "New York City", country: "United States", popular: true },
+  { name: "Tokyo", country: "Japan", popular: true },
+  { name: "Barcelona", country: "Spain", popular: true },
+  { name: "Rome", country: "Italy", popular: true },
+  { name: "Dubai", country: "United Arab Emirates", popular: true },
+  { name: "Amsterdam", country: "Netherlands", popular: false },
+  { name: "Bangkok", country: "Thailand", popular: false },
+  { name: "Singapore", country: "Singapore", popular: false },
+  { name: "Sydney", country: "Australia", popular: false },
+  { name: "Los Angeles", country: "United States", popular: false },
+  { name: "Miami", country: "United States", popular: false },
+  { name: "Berlin", country: "Germany", popular: false },
+  { name: "Prague", country: "Czech Republic", popular: false },
+  { name: "Vienna", country: "Austria", popular: false },
+  { name: "Lisbon", country: "Portugal", popular: false },
+  { name: "Madrid", country: "Spain", popular: false },
+  { name: "Bali", country: "Indonesia", popular: true },
+  { name: "Maldives", country: "Maldives", popular: true },
+  { name: "Swiss Alps", country: "Switzerland", popular: false },
+  { name: "Lake Como", country: "Italy", popular: false },
+];
+
 export function HeroSection() {
   const [destination, setDestination] = useState("");
   const [checkIn, setCheckIn] = useState<Date>();
@@ -26,10 +51,48 @@ export function HeroSection() {
   const [guests, setGuests] = useState({ adults: 2, children: 0, rooms: 1 });
   const [guestsOpen, setGuestsOpen] = useState(false);
   const [today, setToday] = useState<Date | undefined>(undefined);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [filteredCities, setFilteredCities] = useState(cities.filter((c) => c.popular));
+  const inputRef = useRef<HTMLInputElement>(null);
+  const suggestionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setToday(new Date());
   }, []);
+
+  useEffect(() => {
+    if (destination.trim() === "") {
+      setFilteredCities(cities.filter((c) => c.popular));
+    } else {
+      const filtered = cities.filter(
+        (city) =>
+          city.name.toLowerCase().includes(destination.toLowerCase()) ||
+          city.country.toLowerCase().includes(destination.toLowerCase())
+      );
+      setFilteredCities(filtered);
+    }
+  }, [destination]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(event.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(event.target as Node)
+      ) {
+        setShowSuggestions(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelectCity = (cityName: string) => {
+    setDestination(cityName);
+    setShowSuggestions(false);
+  };
 
   const updateGuests = (
     type: "adults" | "children" | "rooms",
@@ -66,15 +129,55 @@ export function HeroSection() {
           <div className="rounded-xl bg-accent p-1 shadow-xl">
             <div className="grid gap-1 md:grid-cols-[1fr_auto_auto_auto]">
               {/* Destination */}
-              <div className="relative flex items-center rounded-lg bg-background px-4 py-3">
-                <MapPin className="mr-3 h-5 w-5 shrink-0 text-muted-foreground" />
-                <Input
-                  type="text"
-                  placeholder="Where are you going?"
-                  value={destination}
-                  onChange={(e) => setDestination(e.target.value)}
-                  className="border-0 p-0 text-base shadow-none focus-visible:ring-0"
-                />
+              <div className="relative">
+                <div className="flex items-center rounded-lg bg-background px-4 py-3">
+                  <MapPin className="mr-3 h-5 w-5 shrink-0 text-muted-foreground" />
+                  <Input
+                    ref={inputRef}
+                    type="text"
+                    placeholder="Where are you going?"
+                    value={destination}
+                    onChange={(e) => setDestination(e.target.value)}
+                    onFocus={() => setShowSuggestions(true)}
+                    className="border-0 p-0 text-base shadow-none focus-visible:ring-0"
+                    autoComplete="off"
+                  />
+                </div>
+                {/* Autocomplete Suggestions */}
+                {showSuggestions && (
+                  <div
+                    ref={suggestionsRef}
+                    className="absolute left-0 right-0 top-full z-50 mt-1 max-h-72 overflow-auto rounded-lg border bg-background shadow-lg"
+                  >
+                    {destination.trim() === "" && (
+                      <div className="px-3 py-2 text-xs font-semibold uppercase text-muted-foreground">
+                        Popular Destinations
+                      </div>
+                    )}
+                    {filteredCities.length > 0 ? (
+                      filteredCities.map((city) => (
+                        <button
+                          key={`${city.name}-${city.country}`}
+                          type="button"
+                          className="flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-secondary"
+                          onClick={() => handleSelectCity(city.name)}
+                        >
+                          <MapPin className="h-4 w-4 text-muted-foreground" />
+                          <div>
+                            <div className="font-medium">{city.name}</div>
+                            <div className="text-sm text-muted-foreground">
+                              {city.country}
+                            </div>
+                          </div>
+                        </button>
+                      ))
+                    ) : (
+                      <div className="px-3 py-4 text-center text-muted-foreground">
+                        No destinations found
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Check-in Date */}

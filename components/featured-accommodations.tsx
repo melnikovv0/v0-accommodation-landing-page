@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star, Heart, MapPin } from "lucide-react";
@@ -95,72 +96,76 @@ export function FeaturedAccommodations() {
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {accommodations.map((accommodation) => (
-            <Card
+            <Link
               key={accommodation.id}
-              className="group overflow-hidden border-0 bg-card shadow-md transition-all duration-300 hover:shadow-xl"
+              href={`/accommodation/${accommodation.id}`}
+              className="block"
             >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <Image
-                  src={accommodation.image}
-                  alt={accommodation.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-                {accommodation.featured && (
-                  <Badge className="absolute left-3 top-3 bg-accent text-accent-foreground">
-                    Featured
-                  </Badge>
-                )}
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-3 top-3 h-9 w-9 rounded-full bg-background/80 text-foreground backdrop-blur-sm hover:bg-background hover:text-destructive"
-                >
-                  <Heart className="h-5 w-5" />
-                  <span className="sr-only">Add to favorites</span>
-                </Button>
-              </div>
-              <CardContent className="p-4">
-                <div className="mb-2 flex items-center gap-1 text-sm text-muted-foreground">
-                  <MapPin className="h-4 w-4" />
-                  <span>{accommodation.location}</span>
-                </div>
-                <h3 className="mb-2 line-clamp-1 text-lg font-semibold text-card-foreground">
-                  {accommodation.title}
-                </h3>
-                <div className="mb-3 flex items-center gap-2">
-                  <Badge variant="secondary" className="font-normal">
-                    {accommodation.type}
-                  </Badge>
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-accent text-accent" />
-                    <span className="text-sm font-medium">
-                      {accommodation.rating}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      ({accommodation.reviews} reviews)
-                    </span>
-                  </div>
-                </div>
-                <div className="flex items-baseline justify-between">
-                  <div>
-                    <span className="text-2xl font-bold text-foreground">
-                      ${accommodation.price}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      {" "}
-                      / night
-                    </span>
-                  </div>
+              <Card className="group overflow-hidden border-0 bg-card shadow-md transition-all duration-300 hover:shadow-xl">
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={accommodation.image}
+                    alt={accommodation.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  {accommodation.featured && (
+                    <Badge className="absolute left-3 top-3 bg-accent text-accent-foreground">
+                      Featured
+                    </Badge>
+                  )}
                   <Button
-                    size="sm"
-                    className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-3 top-3 h-9 w-9 rounded-full bg-background/80 text-foreground backdrop-blur-sm hover:bg-background hover:text-destructive"
+                    onClick={(e) => e.preventDefault()}
                   >
-                    Book now
+                    <Heart className="h-5 w-5" />
+                    <span className="sr-only">Add to favorites</span>
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
+                <CardContent className="p-4">
+                  <div className="mb-2 flex items-center gap-1 text-sm text-muted-foreground">
+                    <MapPin className="h-4 w-4" />
+                    <span>{accommodation.location}</span>
+                  </div>
+                  <h3 className="mb-2 line-clamp-1 text-lg font-semibold text-card-foreground">
+                    {accommodation.title}
+                  </h3>
+                  <div className="mb-3 flex items-center gap-2">
+                    <Badge variant="secondary" className="font-normal">
+                      {accommodation.type}
+                    </Badge>
+                    <div className="flex items-center gap-1">
+                      <Star className="h-4 w-4 fill-accent text-accent" />
+                      <span className="text-sm font-medium">
+                        {accommodation.rating}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        ({accommodation.reviews} reviews)
+                      </span>
+                    </div>
+                  </div>
+                  <div className="flex items-baseline justify-between">
+                    <div>
+                      <span className="text-2xl font-bold text-foreground">
+                        ${accommodation.price}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        {" "}
+                        / night
+                      </span>
+                    </div>
+                    <Button
+                      size="sm"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90"
+                    >
+                      Book now
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
