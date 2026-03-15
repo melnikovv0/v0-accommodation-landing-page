@@ -5,8 +5,11 @@ import {
   useContext,
   useState,
   useEffect,
+  useCallback,
   type ReactNode,
 } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { User as SupabaseUser, Session } from "@supabase/supabase-js";
 
 export type UserRole = "guest" | "owner" | "admin";
 
@@ -15,131 +18,120 @@ export interface User {
   email: string;
   name: string;
   role: UserRole;
+  avatarUrl?: string;
   createdAt: Date;
 }
 
 interface AuthContextType {
   user: User | null;
+  supabaseUser: SupabaseUser | null;
+  session: Session | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
-  register: (email: string, password: string, name: string, role: UserRole) => Promise<{ success: boolean; error?: string }>;
-  logout: () => void;
+  logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   isOwner: boolean;
   isGuest: boolean;
+  isAdmin: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Mock user database
-const mockUsers: (User & { password: string })[] = [
-  {
-    id: "1",
-    email: "owner@example.com",
-    password: "owner123",
-    name: "John Owner",
-    role: "owner",
-    createdAt: new Date(2024, 0, 1),
-  },
-  {
-    id: "2",
-    email: "guest@example.com",
-    password: "guest123",
-    name: "Jane Guest",
-    role: "guest",
-    createdAt: new Date(2024, 0, 15),
-  },
-];
-
-const AUTH_STORAGE_KEY = "stayhub_auth";
+function mapSupabaseUserToUser(supabaseUser: SupabaseUser): User {
+  const metadata = supabaseUser.user_metadata || {};
+  
+  return {
+    id: supabaseUser.id,
+    email: supabaseUser.email || "",
+    name: metadata.full_name || metadata.name || supabaseUser.email?.split("@")[0] || "User",
+    role: (metadata.role as UserRole) || "guest",
+    avatarUrl: metadata.avatar_url,
+    createdAt: new Date(supabaseUser.created_at),
+  };
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [supabaseUser, setSupabaseUser] = useState<SupabaseUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from localStorage on mount
-  useEffect(() => {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        // Restore the createdAt as a Date object
-        parsed.createdAt = new Date(parsed.createdAt);
-        setUser(parsed);
-      } catch {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
-      }
+  const refreshUser = useCallback(async () => {
+    const supabase = createClient();
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    
+    if (currentUser) {
+      setSupabaseUser(currentUser);
+      setUser(mapSupabaseUserToUser(currentUser));
+    } else {
+      setSupabaseUser(null);
+      setUser(null);
     }
-    setIsLoading(false);
   }, []);
 
-  const login = async (
-    email: string,
-    password: string
-  ): Promise<{ success: boolean; error?: string }> => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  useEffect(() => {
+    const supabase = createClient();
 
-    const foundUser = mockUsers.find(
-      (u) => u.email === email && u.password === password
-    );
-
-    if (!foundUser) {
-      return { success: false, error: "Invalid email or password" };
-    }
-
-    const { password: _, ...userWithoutPassword } = foundUser;
-    setUser(userWithoutPassword);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userWithoutPassword));
-    return { success: true };
-  };
-
-  const register = async (
-    email: string,
-    password: string,
-    name: string,
-    role: UserRole
-  ): Promise<{ success: boolean; error?: string }> => {
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    // Check if user already exists
-    if (mockUsers.find((u) => u.email === email)) {
-      return { success: false, error: "Email already registered" };
-    }
-
-    // Create new user
-    const newUser: User & { password: string } = {
-      id: String(mockUsers.length + 1),
-      email,
-      password,
-      name,
-      role,
-      createdAt: new Date(),
+    // Get initial session
+    const initAuth = async () => {
+      try {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        setSession(currentSession);
+        
+        if (currentSession?.user) {
+          setSupabaseUser(currentSession.user);
+          setUser(mapSupabaseUserToUser(currentSession.user));
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    mockUsers.push(newUser);
+    initAuth();
 
-    const { password: _, ...userWithoutPassword } = newUser;
-    setUser(userWithoutPassword);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(userWithoutPassword));
-    return { success: true };
-  };
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, currentSession) => {
+        setSession(currentSession);
+        
+        if (currentSession?.user) {
+          setSupabaseUser(currentSession.user);
+          setUser(mapSupabaseUserToUser(currentSession.user));
+        } else {
+          setSupabaseUser(null);
+          setUser(null);
+        }
+        
+        setIsLoading(false);
+      }
+    );
 
-  const logout = () => {
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  const logout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
     setUser(null);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
+    setSupabaseUser(null);
+    setSession(null);
   };
 
   const value: AuthContextType = {
     user,
+    supabaseUser,
+    session,
     isLoading,
     isAuthenticated: !!user,
-    login,
-    register,
     logout,
+    refreshUser,
     isOwner: user?.role === "owner" || user?.role === "admin",
     isGuest: user?.role === "guest",
+    isAdmin: user?.role === "admin",
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
