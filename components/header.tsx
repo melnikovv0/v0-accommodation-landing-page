@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,10 +15,16 @@ import { useAuth } from "@/lib/auth-context";
 import { SignInDialog, RegisterDialog } from "@/components/auth-dialogs";
 
 export function Header() {
-  const { user, isAuthenticated, isOwner, logout } = useAuth();
+  const { user, isAuthenticated, isOwner, logout, isLoading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [signInOpen, setSignInOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  // Prevent hydration mismatch by only rendering auth-dependent UI after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <>
@@ -74,7 +80,13 @@ export function Header() {
                 <span className="sr-only">Change language</span>
               </Button>
 
-              {isAuthenticated ? (
+              {/* Show skeleton/placeholder during SSR and hydration to prevent mismatch */}
+              {!mounted || isLoading ? (
+                <div className="flex items-center gap-4">
+                  <div className="h-9 w-16 animate-pulse rounded-md bg-primary-foreground/10" />
+                  <div className="h-9 w-20 animate-pulse rounded-md bg-primary-foreground/10" />
+                </div>
+              ) : isAuthenticated ? (
                 <>
                   {/* Owner Dashboard - Only visible for owners */}
                   {isOwner && (
@@ -186,7 +198,12 @@ export function Header() {
                   Attractions
                 </Link>
                 
-                {isAuthenticated ? (
+                {!mounted || isLoading ? (
+                  <div className="mt-4 flex flex-col gap-2">
+                    <div className="h-9 w-full animate-pulse rounded-md bg-primary-foreground/10" />
+                    <div className="h-9 w-full animate-pulse rounded-md bg-primary-foreground/10" />
+                  </div>
+                ) : isAuthenticated ? (
                   <div className="mt-4 flex flex-col gap-2">
                     <div className="flex items-center gap-2 text-primary-foreground">
                       <User className="h-4 w-4" />
