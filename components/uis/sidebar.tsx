@@ -75,7 +75,7 @@ export function UisSidebar({ collapsed = false, onToggle }: SidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 space-y-1 p-2">
         <Link
-          href="/explore"
+          href="/"
           className={cn(
             "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors",
             "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
