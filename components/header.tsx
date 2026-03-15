@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,14 @@ import { useAuth } from "@/lib/auth-context";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { user, isAuthenticated, isLoading, logout, isOwner } = useAuth();
   const router = useRouter();
+
+  // Prevent hydration mismatch by only rendering auth-dependent UI after mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -89,7 +95,7 @@ export function Header() {
               <span className="sr-only">Change language</span>
             </Button>
 
-            {isLoading ? (
+            {!mounted || isLoading ? (
               <div className="h-8 w-20 animate-pulse rounded bg-primary-foreground/20" />
             ) : isAuthenticated && user ? (
               <>
@@ -229,7 +235,7 @@ export function Header() {
                 Attractions
               </Link>
 
-              {isLoading ? (
+              {!mounted || isLoading ? (
                 <div className="mt-4 h-10 animate-pulse rounded bg-primary-foreground/20" />
               ) : isAuthenticated && user ? (
                 <div className="mt-4 flex flex-col gap-3">
