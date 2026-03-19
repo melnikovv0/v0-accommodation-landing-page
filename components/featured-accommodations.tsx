@@ -101,7 +101,7 @@ export function FeaturedAccommodations() {
               href={`/accommodation/${accommodation.id}`}
               className="block"
             >
-              <Card className="group overflow-hidden border-0 bg-card shadow-md transition-all duration-300 hover:shadow-xl">
+              <Card className="group overflow-hidden border bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
                     src={accommodation.image}
@@ -136,13 +136,13 @@ export function FeaturedAccommodations() {
                     <Badge variant="secondary" className="font-normal">
                       {accommodation.type}
                     </Badge>
-                    <div className="flex items-center gap-1">
-                      <Star className="h-4 w-4 fill-accent text-accent" />
-                      <span className="text-sm font-medium">
+                    <div className="flex items-center gap-1.5">
+                      <Star className="h-3.5 w-3.5 fill-accent text-accent" />
+                      <span className="text-sm font-semibold">
                         {accommodation.rating}
                       </span>
-                      <span className="text-sm text-muted-foreground">
-                        ({accommodation.reviews} reviews)
+                      <span className="text-xs text-muted-foreground">
+                        ({accommodation.reviews})
                       </span>
                     </div>
                   </div>

@@ -199,12 +199,12 @@ export default function AccommodationDetailPage() {
               {accommodation.title}
             </h1>
 
-            <div className="mb-6 flex flex-wrap items-center gap-4">
-              <Badge variant="secondary" className="text-sm">
+            <div className="mb-6 flex flex-wrap items-center gap-3">
+              <Badge variant="secondary" className="px-3 py-1 text-sm font-medium">
                 {accommodation.type}
               </Badge>
-              <div className="flex items-center gap-1">
-                <Star className="h-5 w-5 fill-accent text-accent" />
+              <div className="flex items-center gap-1.5 text-sm">
+                <Star className="h-4 w-4 fill-accent text-accent" />
                 <span className="font-semibold">{accommodation.rating}</span>
                 <span className="text-muted-foreground">
                   ({accommodation.reviews} reviews)
@@ -236,16 +236,16 @@ export default function AccommodationDetailPage() {
 
             <div>
               <h2 className="mb-4 text-xl font-semibold">Amenities</h2>
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {accommodation.amenities.map((amenity) => (
                   <div
                     key={amenity}
-                    className="flex items-center gap-3 rounded-lg border p-3"
+                    className="flex items-center gap-3 rounded-lg border bg-muted/30 px-4 py-3 transition-colors hover:bg-muted/50"
                   >
-                    <span className="text-muted-foreground">
+                    <span className="text-primary">
                       {amenityIcons[amenity]}
                     </span>
-                    <span>{amenityLabels[amenity]}</span>
+                    <span className="text-sm font-medium">{amenityLabels[amenity]}</span>
                   </div>
                 ))}
               </div>
@@ -254,10 +254,10 @@ export default function AccommodationDetailPage() {
 
           {/* Booking Card */}
           <div className="lg:col-span-1">
-            <Card className="sticky top-8">
-              <CardHeader>
+            <Card className="sticky top-8 shadow-lg">
+              <CardHeader className="pb-4">
                 <CardTitle className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold">${accommodation.price}</span>
+                  <span className="text-3xl font-bold text-foreground">${accommodation.price}</span>
                   <span className="text-base font-normal text-muted-foreground">
                     / night
                   </span>
@@ -265,20 +265,20 @@ export default function AccommodationDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-lg border p-3">
-                    <div className="text-xs text-muted-foreground">CHECK-IN</div>
-                    <div className="font-medium">Select date</div>
+                  <div className="rounded-lg border bg-muted/20 p-3 transition-colors hover:border-primary/30">
+                    <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Check-in</div>
+                    <div className="mt-1 font-medium">Select date</div>
                   </div>
-                  <div className="rounded-lg border p-3">
-                    <div className="text-xs text-muted-foreground">CHECK-OUT</div>
-                    <div className="font-medium">Select date</div>
+                  <div className="rounded-lg border bg-muted/20 p-3 transition-colors hover:border-primary/30">
+                    <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Check-out</div>
+                    <div className="mt-1 font-medium">Select date</div>
                   </div>
                 </div>
-                <div className="rounded-lg border p-3">
-                  <div className="text-xs text-muted-foreground">GUESTS</div>
-                  <div className="font-medium">2 guests</div>
+                <div className="rounded-lg border bg-muted/20 p-3 transition-colors hover:border-primary/30">
+                  <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Guests</div>
+                  <div className="mt-1 font-medium">2 guests</div>
                 </div>
-                <Button className="w-full" size="lg">
+                <Button className="w-full bg-primary text-primary-foreground hover:bg-primary/90" size="lg">
                   Reserve
                 </Button>
                 <p className="text-center text-sm text-muted-foreground">

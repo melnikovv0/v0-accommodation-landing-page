@@ -13,6 +13,7 @@ import {
 import { Menu, X, Globe, User, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { SignInDialog, RegisterDialog } from "@/components/auth-dialogs";
+import { Logo } from "@/components/logo";
 
 export function Header() {
   const { user, isAuthenticated, isOwner, logout, isLoading } = useAuth();
@@ -28,18 +29,11 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-primary">
+      <header className="sticky top-0 z-50 border-b border-primary/10 bg-primary shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-20 items-center justify-between gap-8">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-                <span className="text-lg font-bold text-accent-foreground">S</span>
-              </div>
-              <span className="text-xl font-bold text-primary-foreground">
-                StayHub
-              </span>
-            </Link>
+            <Logo variant="light" />
 
             {/* Desktop Navigation */}
             <nav className="hidden items-center gap-6 md:flex">
@@ -144,7 +138,7 @@ export function Header() {
                     Sign in
                   </Button>
                   <Button
-                    className="bg-accent text-accent-foreground hover:bg-accent/90"
+                    className="bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 hover:shadow-md transition-all"
                     onClick={() => setRegisterOpen(true)}
                   >
                     Register
@@ -241,7 +235,7 @@ export function Header() {
                       Sign in
                     </Button>
                     <Button
-                      className="w-full bg-accent text-accent-foreground"
+                      className="w-full bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 hover:shadow-md transition-all"
                       onClick={() => {
                         setMobileMenuOpen(false);
                         setRegisterOpen(true);
