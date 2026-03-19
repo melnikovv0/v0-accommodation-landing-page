@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Logo } from "@/components/logo";
 
 const footerLinks = {
   company: [
@@ -51,16 +52,7 @@ export function Footer() {
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-                <span className="text-lg font-bold text-accent-foreground">
-                  S
-                </span>
-              </div>
-              <span className="text-xl font-bold text-primary-foreground">
-                StayHub
-              </span>
-            </Link>
+            <Logo variant="light" />
             <p className="mt-4 text-sm text-primary-foreground/70">
               Your trusted partner for finding the perfect accommodation
               anywhere in the world.
