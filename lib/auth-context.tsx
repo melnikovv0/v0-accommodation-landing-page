@@ -57,17 +57,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from localStorage on mount
+  // Load user from localStorage on mount (client-side only)
   useEffect(() => {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (stored) {
-      try {
+    try {
+      const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+      if (stored) {
         const parsed = JSON.parse(stored);
         // Restore the createdAt as a Date object
         parsed.createdAt = new Date(parsed.createdAt);
         setUser(parsed);
-      } catch {
+      }
+    } catch (error) {
+      // Handle parsing errors silently
+      console.log("[v0] Auth storage load error:", error);
+      try {
         localStorage.removeItem(AUTH_STORAGE_KEY);
+      } catch (e) {
+        // Ignore removal errors
       }
     }
     setIsLoading(false);

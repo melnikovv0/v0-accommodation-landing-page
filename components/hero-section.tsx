@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -18,6 +19,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
+import { useAppStore } from "@/lib/app-store";
 
 const cities = [
   { name: "Paris", country: "France", popular: true },
@@ -45,6 +47,9 @@ const cities = [
 ];
 
 export function HeroSection() {
+  const router = useRouter();
+  const { setSearchFilters } = useAppStore();
+  
   const [destination, setDestination] = useState("");
   const [checkIn, setCheckIn] = useState<Date>();
   const [checkOut, setCheckOut] = useState<Date>();
@@ -104,6 +109,16 @@ export function HeroSection() {
         ? prev[type] + 1
         : Math.max(type === "adults" || type === "rooms" ? 1 : 0, prev[type] - 1),
     }));
+  };
+
+  const handleSearch = () => {
+    setSearchFilters({
+      destination,
+      checkIn: checkIn || null,
+      checkOut: checkOut || null,
+      guests,
+    });
+    router.push("/search");
   };
 
   return (
@@ -360,6 +375,7 @@ export function HeroSection() {
                 <Button
                   size="lg"
                   className="h-auto rounded-lg bg-primary px-6 text-primary-foreground hover:bg-primary/90"
+                  onClick={handleSearch}
                 >
                   <Search className="h-5 w-5" />
                   <span className="sr-only">Search</span>
