@@ -29,9 +29,9 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-primary">
+      <header className="sticky top-0 z-50 border-b border-primary/10 bg-primary shadow-sm">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-20 items-center justify-between gap-8">
             {/* Logo */}
             <Logo variant="light" />
 
@@ -138,7 +138,7 @@ export function Header() {
                     Sign in
                   </Button>
                   <Button
-                    className="bg-accent text-accent-foreground hover:bg-accent/90"
+                    className="bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 hover:shadow-md transition-all"
                     onClick={() => setRegisterOpen(true)}
                   >
                     Register
@@ -235,7 +235,7 @@ export function Header() {
                       Sign in
                     </Button>
                     <Button
-                      className="w-full bg-accent text-accent-foreground"
+                      className="w-full bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 hover:shadow-md transition-all"
                       onClick={() => {
                         setMobileMenuOpen(false);
                         setRegisterOpen(true);
