@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, X, Globe, User, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
+import { Logo } from "@/components/logo";
 import { SignInDialog, RegisterDialog } from "@/components/auth-dialogs";
 
 export function Header() {
@@ -32,13 +33,8 @@ export function Header() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-                <span className="text-lg font-bold text-accent-foreground">S</span>
-              </div>
-              <span className="text-xl font-bold text-primary-foreground">
-                StayHub
-              </span>
+            <Link href="/" className="flex items-center">
+              <Logo variant="full" size="md" />
             </Link>
 
             {/* Desktop Navigation */}
