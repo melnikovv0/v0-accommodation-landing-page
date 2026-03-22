@@ -2,81 +2,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import useSWR from "swr";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Star, Heart, MapPin } from "lucide-react";
+import { Heart, MapPin, Users, Bed, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { Property } from "@/lib/queries";
 
-const accommodations = [
-  {
-    id: 1,
-    title: "Oceanfront Paradise Villa",
-    location: "Maldives",
-    image: "https://images.unsplash.com/photo-1573843981267-be1999ff37cd?w=800&h=600&fit=crop",
-    price: 450,
-    rating: 4.9,
-    reviews: 234,
-    type: "Villa",
-    featured: true,
-  },
-  {
-    id: 2,
-    title: "Alpine Mountain Chalet",
-    location: "Swiss Alps",
-    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&h=600&fit=crop",
-    price: 320,
-    rating: 4.8,
-    reviews: 189,
-    type: "Chalet",
-    featured: false,
-  },
-  {
-    id: 3,
-    title: "Historic City Center Apartment",
-    location: "Paris, France",
-    image: "https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&h=600&fit=crop",
-    price: 180,
-    rating: 4.7,
-    reviews: 412,
-    type: "Apartment",
-    featured: false,
-  },
-  {
-    id: 4,
-    title: "Luxury Beach Resort Suite",
-    location: "Bali, Indonesia",
-    image: "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&h=600&fit=crop",
-    price: 280,
-    rating: 4.9,
-    reviews: 567,
-    type: "Resort",
-    featured: true,
-  },
-  {
-    id: 5,
-    title: "Modern Downtown Loft",
-    location: "New York City",
-    image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop",
-    price: 220,
-    rating: 4.6,
-    reviews: 298,
-    type: "Loft",
-    featured: false,
-  },
-  {
-    id: 6,
-    title: "Serene Lake House Retreat",
-    location: "Lake Como, Italy",
-    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop",
-    price: 390,
-    rating: 4.8,
-    reviews: 156,
-    type: "House",
-    featured: true,
-  },
-];
+const fetcher = (url: string) => fetch(url).then(res => res.json());
 
 export function FeaturedAccommodations() {
+  const { data: properties, isLoading } = useSWR<Property[]>("/api/properties", fetcher);
+
+  // Show first 3 properties as "Featured"
+  const featuredList = (properties || []).slice(0, 3);
+
+  if (isLoading) {
+    return (
+      <section className="bg-background py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-background py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -86,34 +38,34 @@ export function FeaturedAccommodations() {
               Featured Accommodations
             </h2>
             <p className="mt-2 text-muted-foreground">
-              Handpicked stays loved by travelers worldwide
+              Hand-picked places from our system
             </p>
           </div>
-          <Button variant="outline" className="shrink-0">
-            View all properties
-          </Button>
+          <Link href="/explore">
+            <Button variant="outline" className="shrink-0">
+              View All
+            </Button>
+          </Link>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {accommodations.map((accommodation) => (
+          {featuredList.map((property) => (
             <Link
-              key={accommodation.id}
-              href={`/accommodation/${accommodation.id}`}
+              key={property.id}
+              href={`/accommodation/${property.id}`}
               className="block"
             >
               <Card className="group overflow-hidden border bg-card shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
-                    src={accommodation.image}
-                    alt={accommodation.title}
+                    src={property.image}
+                    alt={property.name}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                   />
-                  {accommodation.featured && (
-                    <Badge className="absolute left-3 top-3 bg-accent text-accent-foreground">
-                      Featured
-                    </Badge>
-                  )}
+                  <Badge className="absolute left-3 top-3 bg-accent text-accent-foreground capitalize">
+                    {property.type}
+                  </Badge>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -121,47 +73,34 @@ export function FeaturedAccommodations() {
                     onClick={(e) => e.preventDefault()}
                   >
                     <Heart className="h-5 w-5" />
-                    <span className="sr-only">Add to favorites</span>
                   </Button>
                 </div>
                 <CardContent className="p-4">
                   <div className="mb-2 flex items-center gap-1 text-sm text-muted-foreground">
                     <MapPin className="h-4 w-4" />
-                    <span>{accommodation.location}</span>
+                    <span>{property.location}</span>
                   </div>
                   <h3 className="mb-2 line-clamp-1 text-lg font-semibold text-card-foreground">
-                    {accommodation.title}
+                    {property.name}
                   </h3>
-                  <div className="mb-3 flex items-center gap-2">
-                    <Badge variant="secondary" className="font-normal">
-                      {accommodation.type}
-                    </Badge>
-                    <div className="flex items-center gap-1.5">
-                      <Star className="h-3.5 w-3.5 fill-accent text-accent" />
-                      <span className="text-sm font-semibold">
-                        {accommodation.rating}
-                      </span>
-                      <span className="text-xs text-muted-foreground">
-                        ({accommodation.reviews})
-                      </span>
+                  <div className="mb-3 flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Users className="h-3.5 w-3.5" />
+                      <span>{property.max_guests} guests</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Bed className="h-3.5 w-3.5" />
+                      <span>{property.bedrooms} bedrooms</span>
                     </div>
                   </div>
                   <div className="flex items-baseline justify-between">
                     <div>
                       <span className="text-2xl font-bold text-foreground">
-                        ${accommodation.price}
+                        ${property.price_per_night}
                       </span>
-                      <span className="text-sm text-muted-foreground">
-                        {" "}
-                        / night
-                      </span>
+                      <span className="text-sm text-muted-foreground"> / night</span>
                     </div>
-                    <Button
-                      size="sm"
-                      className="bg-primary text-primary-foreground hover:bg-primary/90"
-                    >
-                      Book now
-                    </Button>
+                    <Button size="sm">Detail</Button>
                   </div>
                 </CardContent>
               </Card>
